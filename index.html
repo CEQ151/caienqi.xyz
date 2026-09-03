@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cabbage · 蔡恩祈</title>
+    <meta name="description" content="蔡恩祈（cabbage），上海交通大学本科生。" />
+    <meta name="author" content="蔡恩祈" />
+    <meta property="og:title" content="cabbage · 蔡恩祈" />
+    <meta property="og:description" content="上海交通大学本科生" />
+    <meta property="og:image" content="avatar.png" />
+    <link rel="icon" type="image/png" href="avatar.png" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text: #1a1f27;
+        --muted: #8a919c;
+        --pill-bg: #f2f3f5;
+        --pill-text: #4b5563;
+        --divider: #eceef1;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101216;
+          --text: #e8eaed;
+          --muted: #8b919b;
+          --pill-bg: #1d2127;
+          --pill-text: #aab1bb;
+          --divider: #23272e;
+        }
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+          "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        font-size: 16px;
+        line-height: 1.8;
+        -webkit-font-smoothing: antialiased;
+      }
+      .container {
+        max-width: 660px;
+        margin: 0 auto;
+        padding: 88px 24px 64px;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* 头部 */
+      header {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+      .avatar {
+        width: 104px;
+        height: 104px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      h1 {
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: 0.01em;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 16px;
+        margin-top: 2px;
+      }
+      .pill {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 2px 12px;
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        border-radius: 999px;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      /* 区块 */
+      section {
+        margin-top: 72px;
+      }
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .about p {
+        color: var(--text);
+        max-width: 580px;
+      }
+      .about p + p {
+        margin-top: 12px;
+      }
+
+      /* 条目：左年份，右内容 */
+      .row {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 20px;
+        padding: 18px 0;
+      }
+      .row + .row {
+        border-top: 1px solid var(--divider);
+      }
+      .date {
+        color: var(--muted);
+        font-size: 15px;
+        padding-top: 2px;
+      }
+      .item-title {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+      .item-title a {
+        transition: opacity 0.15s ease;
+      }
+      .item-title a:hover {
+        opacity: 0.6;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .item-title .arrow {
+        font-size: 14px;
+        color: var(--muted);
+        margin-left: 2px;
+      }
+      .item-desc {
+        color: var(--muted);
+        font-size: 15px;
+        margin-top: 2px;
+      }
+
+      /* 页脚 */
+      footer {
+        margin-top: 88px;
+        padding-top: 24px;
+        border-top: 1px solid var(--divider);
+        color: var(--muted);
+        font-size: 13.5px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      footer a:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+
+      @media (max-width: 560px) {
+        .container {
+          padding-top: 56px;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+        }
+        .avatar {
+          width: 88px;
+          height: 88px;
+        }
+        .row {
+          grid-template-columns: 1fr;
+          gap: 4px;
+          padding: 16px 0;
+        }
+        section {
+          margin-top: 56px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img class="avatar" src="avatar.png" alt="蔡恩祈的头像" />
+        <div>
+          <h1>蔡恩祈 <span style="font-weight: 400">cabbage</span></h1>
+          <p class="subtitle">上海交通大学 · 本科生</p>
+          <span class="pill">caienqi.xyz</span>
+        </div>
+      </header>
+
+      <section class="about">
+        <h2>About</h2>
+        <p>
+          我是蔡恩祈，也可以叫我 cabbage，现在是上海交通大学的本科生。
+          平时喜欢写一些解决自己需求的小工具，相信简单的东西才容易被真正用起来。
+        </p>
+      </section>
+
+      <section>
+        <h2>Projects</h2>
+        <div class="row">
+          <div class="date">2026 — Now</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/dsh-plugin-skills" target="_blank" rel="noopener">dsh-plugin-skills</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">DeepSeek Harness 插件开发技能集</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/shuiyuan_Downloader" target="_blank" rel="noopener">shuiyuan_Downloader</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">一键下载上海交通大学水源社区全楼细节</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/liquid-memo-widget" target="_blank" rel="noopener">liquid-memo-widget</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">Windows 11 桌面便签与待办小组件，液态玻璃风格</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/GPT-Cleaner" target="_blank" rel="noopener">GPT-Cleaner</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">将 ChatGPT 网页版输出的 Markdown 清洗为 Typora 可接受的格式</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/SelfLearning-Prompt" target="_blank" rel="noopener">SelfLearning-Prompt</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">供大学生使用 AI 进行自学的提示词集合</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/LuminCrypt" target="_blank" rel="noopener">LuminCrypt</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">本地优先的 Unicode 隐写检测与文本加密工具</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">2026</div>
+          <div>
+            <div class="item-title">
+              <a href="https://github.com/CEQ151/FileEcho" target="_blank" rel="noopener">FileEcho</a><span class="arrow">↗</span>
+            </div>
+            <div class="item-desc">本地 AI 文件分析工具，支持文件树注释、智能搜索与代码分析</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Contact</h2>
+        <div class="row">
+          <div class="date">GitHub</div>
+          <div class="item-title">
+            <a href="https://github.com/CEQ151" target="_blank" rel="noopener">CEQ151</a><span class="arrow">↗</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">Email</div>
+          <div class="item-title">
+            <a href="mailto:caienqi0751@sjtu.edu.cn">caienqi0751@sjtu.edu.cn</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="date">Gmail</div>
+          <div class="item-title">
+            <a href="mailto:jerry18352346603@gmail.com">jerry18352346603@gmail.com</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>© 2026 蔡恩祈</span>
+        <a href="https://github.com/CEQ151" target="_blank" rel="noopener">github.com/CEQ151</a>
+      </footer>
+    </div>
+  </body>
+</html>
