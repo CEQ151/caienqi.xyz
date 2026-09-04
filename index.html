@@ -261,6 +261,10 @@
       .donate-btn svg { width: 19px; height: 19px; }
       .donate-hint { font-size: 13.5px; color: var(--muted); }
 
+      /* 评论区 */
+      .comments-section { margin-top: 64px; }
+      .comments-section .giscus-wrap { margin-top: 6px; }
+
       /* 右上角悬浮切换钮（语言 / 主题） */
       .float-controls {
         position: fixed;
@@ -512,6 +516,30 @@
         </div>
       </section>
 
+      <section class="comments-section" id="comments">
+        <h2 data-i18n="comments">留言反馈</h2>
+        <div class="giscus-wrap">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="CEQ151/MyTime"
+            data-repo-id="R_kgDOS1Zx2g"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOS1Zx2s4DE2Lh"
+            data-mapping="specific"
+            data-term="MyTime 留言反馈"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="1"
+            data-input-position="top"
+            data-theme="light"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+          ></script>
+        </div>
+      </section>
+
       <section>
         <h2 data-i18n="contact">Contact</h2>
         <div class="row">
@@ -590,6 +618,7 @@
             "donate-sub": "MyTime 是免费的，你的支持就是更新的动力 🧡",
             wechat: "微信",
             alipay: "支付宝",
+            comments: "留言反馈",
           },
           en: {
             "page-title": "cabbage · Cai Enqi",
@@ -607,6 +636,7 @@
             "donate-sub": "MyTime is free — your support keeps the updates coming 🧡",
             wechat: "WeChat Pay",
             alipay: "Alipay",
+            comments: "Feedback",
           },
         };
         var MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8" />';
@@ -659,19 +689,32 @@
         function drawIcon() {
           themeIcon.innerHTML = currentTheme() === "dark" ? SUN : MOON; // show the target mode
         }
+        function syncGiscus() {
+          // Keep the embedded giscus comment widget in step with the site's theme and language.
+          var iframe = document.querySelector("iframe.giscus-frame");
+          if (!iframe || !iframe.contentWindow) return;
+          iframe.contentWindow.postMessage(
+            { giscus: { setConfig: { theme: currentTheme(), lang: currentLangValue === "zh" ? "zh-CN" : "en" } } },
+            "https://giscus.app"
+          );
+        }
         drawIcon();
+        // giscus loads lazily/async: re-sync its theme+lang when it has mounted.
+        setTimeout(syncGiscus, 1500);
 
         themeBtn.addEventListener("click", function () {
           var next = currentTheme() === "dark" ? "light" : "dark";
           try { localStorage.setItem("site-theme", next); } catch (e) {}
           html.setAttribute("data-theme", next);
           drawIcon();
+          syncGiscus();
         });
         langBtn.addEventListener("click", function () {
           currentLangValue = currentLangValue === "zh" ? "en" : "zh";
           try { localStorage.setItem("site-lang", currentLangValue); } catch (e) {}
           langCache = I18N[currentLangValue];
           applyLang(currentLangValue);
+          syncGiscus();
         });
 
         // expose the effective theme for headless screenshot tests
