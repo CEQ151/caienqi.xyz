@@ -105,6 +105,90 @@
         margin-top: 12px;
       }
 
+      /* 项目卡片 */
+      .project-card {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 24px;
+        border: 1px solid var(--divider);
+        border-radius: 18px;
+        transition: border-color 0.15s ease;
+      }
+      .project-card:hover {
+        border-color: var(--muted);
+      }
+      .project-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        flex-shrink: 0;
+      }
+      .project-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .project-name {
+        font-size: 17px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .version-pill {
+        display: inline-block;
+        padding: 0 10px;
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 400;
+        line-height: 1.8;
+        font-variant-numeric: tabular-nums;
+      }
+      .project-desc {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin-top: 4px;
+        line-height: 1.7;
+      }
+      .download-btn {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 22px;
+        background: var(--text);
+        color: var(--bg);
+        border-radius: 12px;
+        font-size: 14.5px;
+        font-weight: 500;
+        line-height: 1.5;
+        transition: opacity 0.15s ease;
+      }
+      .download-btn:hover {
+        opacity: 0.82;
+      }
+      .download-btn svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      @media (max-width: 560px) {
+        .project-card {
+          flex-wrap: wrap;
+        }
+        .project-icon {
+          width: 60px;
+          height: 60px;
+        }
+        .download-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
       /* 条目：左年份，右内容 */
       .row {
         display: grid;
@@ -205,6 +289,33 @@
       </section>
 
       <section>
+        <h2>Projects</h2>
+        <div class="project-card">
+          <img
+            class="project-icon"
+            src="https://raw.githubusercontent.com/CEQ151/liquid-memo-widget/main/assets/logo.png"
+            alt="Liquid Memo Widget 图标"
+          />
+          <div class="project-info">
+            <div class="project-name">
+              Liquid Memo Widget
+              <span class="version-pill" id="lmw-version" title="自动同步 GitHub 最新 Release">…</span>
+            </div>
+            <p class="project-desc">
+              Windows 桌面流体备忘录小组件：Markdown 事件细节、子任务、重复任务、日历订阅，
+              常驻桌面即写即看。
+            </p>
+          </div>
+          <a class="download-btn" id="lmw-download" href="https://github.com/CEQ151/liquid-memo-widget/releases/latest" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M4 19h16" />
+            </svg>
+            <span id="lmw-download-label">Download</span>
+          </a>
+        </div>
+      </section>
+
+      <section>
         <h2>Contact</h2>
         <div class="row">
           <div class="date">GitHub</div>
@@ -231,5 +342,34 @@
         <a href="https://github.com/CEQ151" target="_blank" rel="noopener">github.com/CEQ151</a>
       </footer>
     </div>
+
+    <script>
+      // Liquid Memo Widget: version badge + direct .exe download from the latest GitHub release.
+      (function () {
+        var API = "https://api.github.com/repos/CEQ151/liquid-memo-widget/releases/latest";
+        var versionEl = document.getElementById("lmw-version");
+        var downloadEl = document.getElementById("lmw-download");
+        var labelEl = document.getElementById("lmw-download-label");
+        fetch(API)
+          .then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+          })
+          .then(function (release) {
+            if (versionEl && release.tag_name) versionEl.textContent = release.tag_name;
+            var asset = (release.assets || []).find(function (a) {
+              return /\.exe$/i.test(a.name);
+            });
+            if (asset && downloadEl) {
+              downloadEl.href = asset.browser_download_url;
+              if (labelEl) labelEl.textContent = "Download " + (asset.size / 1048576).toFixed(1) + " MB";
+            }
+          })
+          .catch(function () {
+            // API unreachable (e.g. rate limit): badge hides, button falls back to the releases page.
+            if (versionEl) versionEl.style.display = "none";
+          });
+      })();
+    </script>
   </body>
 </html>
