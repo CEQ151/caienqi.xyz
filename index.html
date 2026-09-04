@@ -109,8 +109,8 @@
       .project-card {
         display: flex;
         align-items: center;
-        gap: 22px;
-        padding: 24px;
+        gap: 18px;
+        padding: 20px 22px;
         border: 1px solid var(--divider);
         border-radius: 18px;
         transition: border-color 0.15s ease;
@@ -136,6 +136,11 @@
         gap: 10px;
         flex-wrap: wrap;
       }
+      @media (min-width: 561px) {
+        .project-name {
+          white-space: nowrap;
+        }
+      }
       .version-pill {
         display: inline-block;
         padding: 0 10px;
@@ -157,8 +162,9 @@
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 22px;
+        gap: 7px;
+        padding: 9px 16px;
+        white-space: nowrap;
         background: var(--text);
         color: var(--bg);
         border-radius: 12px;
@@ -179,8 +185,9 @@
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
+        gap: 7px;
+        padding: 9px 14px;
+        white-space: nowrap;
         background: transparent;
         color: var(--text);
         border: 1px solid var(--divider);
@@ -403,7 +410,10 @@
             });
             if (asset && downloadEl) {
               downloadEl.href = asset.browser_download_url;
-              if (labelEl) labelEl.textContent = "Download " + (asset.size / 1048576).toFixed(1) + " MB";
+              if (labelEl) {
+                labelEl.textContent = "Download";
+                downloadEl.title = asset.name + " · " + (asset.size / 1048576).toFixed(1) + " MB";
+              }
             }
           })
           .catch(function () {
