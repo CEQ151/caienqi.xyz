@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>更新日志 · MyTime</title>
+    <meta name="description" content="MyTime（Windows 桌面流体备忘小组件）的完整更新日志与版本路线。" />
+    <meta name="author" content="蔡恩祈" />
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/CEQ151/MyTime/main/assets/logo.png" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text: #1a1f27;
+        --muted: #8a919c;
+        --pill-bg: #f2f3f5;
+        --pill-text: #4b5563;
+        --divider: #eceef1;
+        --accent: #4f7cc9;
+        --card-bg: transparent;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101216;
+          --text: #e8eaed;
+          --muted: #8b919b;
+          --pill-bg: #1d2127;
+          --pill-text: #aab1bb;
+          --divider: #23272e;
+          --accent: #7da4e0;
+        }
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+          "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        font-size: 16px;
+        line-height: 1.8;
+        -webkit-font-smoothing: antialiased;
+      }
+      .container { max-width: 720px; margin: 0 auto; padding: 56px 24px 64px; }
+      a { color: inherit; text-decoration: none; }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 14.5px;
+        transition: color 0.15s ease;
+      }
+      .back:hover { color: var(--text); }
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .app-icon { width: 40px; height: 40px; border-radius: 10px; vertical-align: -6px; }
+      .subtitle { color: var(--muted); font-size: 15px; margin-top: 4px; }
+      .subtitle a { border-bottom: 1px solid var(--divider); transition: border-color 0.15s ease; }
+      .subtitle a:hover { border-color: var(--muted); }
+
+      /* 时间线 */
+      .timeline { margin-top: 44px; }
+      .version {
+        position: relative;
+        padding: 0 0 44px 34px;
+        border-left: 1px solid var(--divider);
+      }
+      .version:last-child { border-left-color: transparent; padding-bottom: 8px; }
+      .version::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 10px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+      .version.latest::before { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
+      .version-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+      .version-tag {
+        font-size: 19px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        text-decoration: none;
+        transition: opacity 0.15s ease;
+      }
+      .version-tag:hover { opacity: 0.65; text-decoration: underline; text-underline-offset: 4px; }
+      .version-date { color: var(--muted); font-size: 13.5px; }
+      .latest-badge {
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        border-radius: 999px;
+        font-size: 12px;
+        padding: 1px 10px;
+        line-height: 1.7;
+      }
+      .version-summary {
+        color: var(--text);
+        font-size: 15px;
+        margin-top: 6px;
+      }
+      .changes { margin-top: 10px; }
+      .cat {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 14px 0 4px;
+      }
+      .cat.feature { color: var(--accent); }
+      .changes ul { list-style: none; }
+      .changes li {
+        position: relative;
+        padding-left: 16px;
+        color: var(--pill-text);
+        font-size: 14.5px;
+        line-height: 1.75;
+        margin-top: 4px;
+      }
+      .changes li::before {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 0.85em;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--divider);
+      }
+      @media (prefers-color-scheme: dark) {
+        .changes li::before { background: #33383f; }
+      }
+      .changes code {
+        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+        font-size: 13px;
+        background: var(--pill-bg);
+        border-radius: 5px;
+        padding: 1px 6px;
+      }
+      .error {
+        margin-top: 44px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .error a { border-bottom: 1px solid var(--divider); }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a class="back" href="/">← 返回主页</a>
+      <h1>
+        <img class="app-icon" src="https://raw.githubusercontent.com/CEQ151/MyTime/main/assets/logo.png" alt="MyTime 图标" />
+        MyTime 更新日志
+      </h1>
+      <p class="subtitle">
+        从第一个版本到现在的完整更新路线 · 下载最新版请见
+        <a href="/#projects">主页</a> 或
+        <a href="https://github.com/CEQ151/MyTime/releases" target="_blank" rel="noopener">GitHub Releases</a>
+      </p>
+
+      <div class="timeline" id="timeline">
+        <p class="error" id="loading">正在加载更新日志…</p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <script>
+      // Render the repo's CHANGELOG.md live: new releases show up here automatically,
+      // no manual page edits needed. Falls back to a link if fetching/markdown fails.
+      (function () {
+        var RAW = "https://raw.githubusercontent.com/CEQ151/MyTime/main/CHANGELOG.md";
+        var timeline = document.getElementById("timeline");
+
+        function classify(title) {
+          if (/新功能|✨/.test(title)) return "feature";
+          if (/修复|🐛/.test(title)) return "fix";
+          if (/性能|⚡/.test(title)) return "perf";
+          return "misc";
+        }
+
+        function el(tag, cls, text) {
+          var node = document.createElement(tag);
+          if (cls) node.className = cls;
+          if (text !== undefined) node.textContent = text;
+          return node;
+        }
+
+        // Minimal line-based parser: the changelog format is fixed
+        // (## vX.Y.Z - date, optional "> summary", "### emoji 分类", "- 条目").
+        function render(md) {
+          timeline.textContent = "";
+          var sections = md.split(/^## /m).slice(1);
+          var latestDone = false;
+          sections.forEach(function (section) {
+            var lines = section.split("\n");
+            var head = lines[0].trim();
+            var m = head.match(/^(v[\w.-]+)(?:\s*-\s*(.*))?$/);
+            if (!m) return;
+            var version = m[1];
+            var date = (m[2] || "").trim();
+
+            var item = el("div", "version");
+            if (!latestDone) {
+              item.classList.add("latest");
+              latestDone = true;
+            }
+            var headRow = el("div", "version-head");
+            var link = el("a", "version-tag", version);
+            link.href = "https://github.com/CEQ151/MyTime/releases/tag/" + encodeURIComponent(version);
+            link.target = "_blank";
+            link.rel = "noopener";
+            headRow.appendChild(link);
+            if (date) headRow.appendChild(el("span", "version-date", date));
+            if (item.classList.contains("latest")) headRow.appendChild(el("span", "latest-badge", "最新"));
+            item.appendChild(headRow);
+
+            var changes = el("div", "changes");
+            var currentCat = null;
+            lines.slice(1).forEach(function (line) {
+              var h3 = line.match(/^###\s+(.*)$/);
+              if (h3) {
+                currentCat = el("div", "cat " + classify(h3[1]), h3[1].trim());
+                changes.appendChild(currentCat);
+                changes.appendChild(el("ul"));
+                return;
+              }
+              var liText = line.match(/^-\s+(.*)$/);
+              if (liText && currentCat) {
+                var li = document.createElement("li");
+                li.innerHTML = marked.parse(liText[1]);
+                changes.lastChild.appendChild(li);
+              } else if (/^>\s+/.test(line) && !changes.querySelector("ul")) {
+                item.appendChild(el("p", "version-summary", line.replace(/^>\s+/, "").trim()));
+              }
+            });
+            item.appendChild(changes);
+            timeline.appendChild(item);
+          });
+        }
+
+        fetch(RAW)
+          .then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+            return r.text();
+          })
+          .then(render)
+          .catch(function () {
+            var p = document.getElementById("loading");
+            if (p) {
+              p.innerHTML =
+                "更新日志加载失败（网络或限流原因）。你可以直接在 GitHub 上查看" +
+                '<a href="https://github.com/CEQ151/MyTime/blob/main/CHANGELOG.md" target="_blank" rel="noopener">完整更新日志</a>。';
+            }
+          });
+      })();
+    </script>
+  </body>
+</html>
