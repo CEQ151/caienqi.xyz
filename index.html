@@ -221,6 +221,105 @@
         align-items: center;
         gap: 10px;
       }
+
+      /* 捐赠 */
+      .donate-section {
+        margin-top: 64px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .donate-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 30px;
+        font-size: 15.5px;
+        font-weight: 600;
+        font-family: inherit;
+        color: #ffd9a8;
+        background: linear-gradient(140deg, #ff8a3d, #f0b429);
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        box-shadow: 0 10px 26px rgba(240, 150, 50, 0.28);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .donate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(240, 150, 50, 0.38);
+      }
+      .donate-btn svg { width: 19px; height: 19px; }
+      .donate-hint { font-size: 13.5px; color: var(--muted); }
+
+      .donate-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(10, 14, 20, 0.55);
+        backdrop-filter: blur(6px);
+      }
+      .donate-overlay[hidden] { display: none; }
+      .donate-modal {
+        position: relative;
+        width: 100%;
+        max-width: 460px;
+        border-radius: 22px;
+        padding: 36px 32px 32px;
+        background: var(--bg);
+        border: 1px solid var(--divider);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+        text-align: center;
+      }
+      .donate-close {
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: var(--pill-bg);
+        color: var(--pill-text);
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .donate-close:hover { color: var(--text); }
+      .donate-title { font-size: 21px; font-weight: 700; }
+      .donate-sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+      .qr-grid { display: flex; gap: 18px; margin-top: 24px; }
+      .qr-grid figure {
+        flex: 1;
+        margin: 0;
+        border: 1px solid var(--divider);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fff;
+      }
+      .qr-grid img { display: block; width: 100%; border-radius: 8px; }
+      .qr-grid figcaption { margin-top: 8px; font-size: 13px; color: var(--pill-text); font-weight: 600; }
+      .bmc-btn {
+        margin-top: 22px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 12px 26px;
+        border-radius: 12px;
+        font-size: 14.5px;
+        font-weight: 700;
+        color: #0d1117;
+        background: #ffdd00;
+        box-shadow: 0 6px 18px rgba(255, 221, 0, 0.35);
+        transition: transform 0.15s ease;
+      }
+      .bmc-btn:hover { transform: translateY(-2px); }
+      .bmc-btn svg { width: 18px; height: 18px; }
       @media (max-width: 560px) {
         .project-card {
           flex-wrap: wrap;
@@ -406,11 +505,66 @@
         </div>
       </section>
 
+      <section class="donate-section">
+        <button class="donate-btn" id="donate-open" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 8h1a3 3 0 0 1 0 6h-1" /><path d="M4 8h13v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" /><path d="M8 2v2" /><path d="M12 2v2" /><path d="M16 2v2" /><path d="M4.5 21h11" />
+          </svg>
+          请我喝杯咖啡
+        </button>
+        <p class="donate-hint">如果 MyTime 帮到了你，欢迎请作者喝一杯 ☕</p>
+      </section>
+
       <footer>
         <span>© 2026 蔡恩祈</span>
         <a href="https://github.com/CEQ151" target="_blank" rel="noopener">github.com/CEQ151</a>
       </footer>
     </div>
+
+    <!-- 捐赠弹窗：微信 / 支付宝收款码 + Buy Me a Coffee -->
+    <div class="donate-overlay" id="donate-overlay" hidden>
+      <div class="donate-modal" role="dialog" aria-modal="true" aria-label="支持作者">
+        <button class="donate-close" id="donate-close" type="button" aria-label="关闭">×</button>
+        <h3 class="donate-title">请作者喝杯咖啡</h3>
+        <p class="donate-sub">MyTime 是免费的，你的支持就是更新的动力 🧡</p>
+        <div class="qr-grid">
+          <figure>
+            <img src="img/wechat-qr.png" alt="微信收款码" />
+            <figcaption>微信</figcaption>
+          </figure>
+          <figure>
+            <img src="img/alipay-qr.png" alt="支付宝收款码" />
+            <figcaption>支付宝</figcaption>
+          </figure>
+        </div>
+        <a class="bmc-btn" id="bmc-link" href="https://buymeacoffee.com/caienqi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 8h1a3 3 0 0 1 0 6h-1" /><path d="M4 8h13v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" /><path d="M8 2v2" /><path d="M12 2v2" /><path d="M16 2v2" /><path d="M4.5 21h11" />
+          </svg>
+          Buy me a coffee
+        </a>
+      </div>
+    </div>
+
+    <script>
+      // Donate modal: open/close via button, backdrop click or Esc.
+      (function () {
+        var overlay = document.getElementById("donate-overlay");
+        var open = document.getElementById("donate-open");
+        var close = document.getElementById("donate-close");
+        if (!overlay) return;
+        function show() { overlay.hidden = false; }
+        function hide() { overlay.hidden = true; }
+        document.getElementById("donate-open").addEventListener("click", show);
+        document.getElementById("donate-close").addEventListener("click", hide);
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) hide();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !overlay.hidden) hide();
+        });
+      })();
+    </script>
 
     <script>
       // MyTime: version badge + direct .exe download from the latest GitHub release.
