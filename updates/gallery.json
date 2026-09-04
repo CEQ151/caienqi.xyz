@@ -1,0 +1,7 @@
+{
+  "v3.3.0": [
+    { "file": "markdown", "caption": "Markdown 事件细节：悬浮即见的富文本小窗" },
+    { "file": "add-event", "caption": "「添加细节」直接在添加面板展开" },
+    { "file": "import-export", "caption": "设置 → 关于 → 备份与迁移" }
+  ]
+}

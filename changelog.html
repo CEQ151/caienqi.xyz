@@ -150,6 +150,36 @@
         font-size: 15px;
       }
       .error a { border-bottom: 1px solid var(--divider); }
+
+      /* 版本截图画廊 */
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .gallery a {
+        display: block;
+        border: 1px solid var(--divider);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.15s ease;
+      }
+      .gallery a:hover { border-color: var(--muted); }
+      .gallery img {
+        display: block;
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        object-position: top;
+      }
+      .gallery figcaption {
+        font-size: 12.5px;
+        color: var(--muted);
+        padding: 7px 10px;
+        border-top: 1px solid var(--divider);
+        line-height: 1.5;
+      }
     </style>
   </head>
   <body>
@@ -192,9 +222,38 @@
           return node;
         }
 
+        // Screenshots per version, from updates/gallery.json:
+        // { "vX.Y.Z": [ { "file": "slug", "caption": "…" } ] } → updates/vX.Y.Z/slug.webp
+        function fetchGallery() {
+          return fetch("updates/gallery.json")
+            .then(function (r) { return r.ok ? r.json() : {}; })
+            .catch(function () { return {}; });
+        }
+
+        function addGallery(item, version, gallery) {
+          var shots = gallery[version];
+          if (!shots || !shots.length) return;
+          var fig = document.createElement("div");
+          fig.className = "gallery";
+          shots.forEach(function (shot) {
+            var a = document.createElement("a");
+            a.href = "updates/" + version + "/" + shot.file + ".webp";
+            a.target = "_blank";
+            a.rel = "noopener";
+            var img = document.createElement("img");
+            img.src = a.href;
+            img.alt = shot.caption || version;
+            img.loading = "lazy";
+            a.appendChild(img);
+            if (shot.caption) a.appendChild(el("figcaption", null, shot.caption));
+            fig.appendChild(a);
+          });
+          item.appendChild(fig);
+        }
+
         // Minimal line-based parser: the changelog format is fixed
         // (## vX.Y.Z - date, optional "> summary", "### emoji 分类", "- 条目").
-        function render(md) {
+        function renderAll(md, gallery) {
           timeline.textContent = "";
           var sections = md.split(/^## /m).slice(1);
           var latestDone = false;
@@ -241,16 +300,17 @@
               }
             });
             item.appendChild(changes);
+            addGallery(item, version, gallery);
             timeline.appendChild(item);
           });
         }
 
-        fetch(RAW)
-          .then(function (r) {
-            if (!r.ok) throw new Error(r.status);
-            return r.text();
+        Promise.all([fetch(RAW), fetchGallery()])
+          .then(function (results) {
+            if (!results[0].ok) throw new Error(results[0].status);
+            return Promise.all([results[0].text(), results[1]]);
           })
-          .then(render)
+          .then(function (pair) { renderAll(pair[0], pair[1]); })
           .catch(function () {
             var p = document.getElementById("loading");
             if (p) {
