@@ -20,7 +20,7 @@
         --divider: #eceef1;
       }
       @media (prefers-color-scheme: dark) {
-        :root {
+        :root:not([data-theme="light"]) {
           --bg: #101216;
           --text: #e8eaed;
           --muted: #8b919b;
@@ -28,6 +28,14 @@
           --pill-text: #aab1bb;
           --divider: #23272e;
         }
+      }
+      html[data-theme="dark"] {
+        --bg: #101216;
+        --text: #e8eaed;
+        --muted: #8b919b;
+        --pill-bg: #1d2127;
+        --pill-text: #aab1bb;
+        --divider: #23272e;
       }
       * {
         margin: 0;
@@ -253,6 +261,37 @@
       .donate-btn svg { width: 19px; height: 19px; }
       .donate-hint { font-size: 13.5px; color: var(--muted); }
 
+      /* 右上角悬浮切换钮（语言 / 主题） */
+      .float-controls {
+        position: fixed;
+        top: 22px;
+        right: 22px;
+        z-index: 60;
+        display: flex;
+        gap: 8px;
+      }
+      .float-btn {
+        min-width: 44px;
+        height: 40px;
+        padding: 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--divider);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--bg) 78%, transparent);
+        backdrop-filter: blur(8px);
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .float-btn:hover { color: var(--text); border-color: var(--muted); }
+      .float-btn svg { width: 17px; height: 17px; }
+      .donate-hint { font-size: 13.5px; color: var(--muted); }
+
       .donate-overlay {
         position: fixed;
         inset: 0;
@@ -413,26 +452,32 @@
     </style>
   </head>
   <body>
+    <div class="float-controls">
+      <button class="float-btn" id="lang-btn" type="button" title="Switch language">EN</button>
+      <button class="float-btn" id="theme-btn" type="button" title="切换主题">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+      </button>
+    </div>
     <div class="container">
       <header>
         <img class="avatar" src="avatar.png" alt="蔡恩祈的头像" />
         <div>
           <h1>蔡恩祈 <span style="font-weight: 400">cabbage</span></h1>
-          <p class="subtitle">上海交通大学 · 本科生</p>
+          <p class="subtitle" data-i18n="subtitle">上海交通大学 · 本科生</p>
           <span class="pill">caienqi.xyz</span>
         </div>
       </header>
 
       <section class="about">
-        <h2>About</h2>
-        <p>
+        <h2 data-i18n="about">About</h2>
+        <p data-i18n="about-text">
           我是蔡恩祈，也可以叫我 cabbage，现在是上海交通大学的本科生。
           平时喜欢写一些解决自己需求的小工具，相信简单的东西才容易被真正用起来。
         </p>
       </section>
 
       <section id="projects">
-        <h2>Projects</h2>
+        <h2 data-i18n="projects">Projects</h2>
         <div class="project-card">
           <img
             class="project-icon"
@@ -445,9 +490,8 @@
               <span class="version-pill" id="lmw-version" title="自动同步 GitHub 最新 Release">…</span>
             </div>
             <p class="project-desc">
-              Windows 桌面流体备忘录小组件：Markdown 事件细节、子任务、重复任务、日历订阅，
-              常驻桌面即写即看。
-              <a class="changelog-link" href="/changelog.html">更新日志 →</a>
+              <span data-i18n="proj-desc">Windows 桌面流体备忘录小组件：Markdown 事件细节、子任务、重复任务、日历订阅，常驻桌面即写即看。</span>
+              <a class="changelog-link" href="/changelog.html" data-i18n="changelog-link">更新日志 →</a>
             </p>
           </div>
           <div class="project-actions">
@@ -468,7 +512,7 @@
       </section>
 
       <section>
-        <h2>Contact</h2>
+        <h2 data-i18n="contact">Contact</h2>
         <div class="row">
           <div class="date">GitHub</div>
           <div class="item-title">
@@ -494,9 +538,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M17 8h1a3 3 0 0 1 0 6h-1" /><path d="M4 8h13v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" /><path d="M8 2v2" /><path d="M12 2v2" /><path d="M16 2v2" /><path d="M4.5 21h11" />
           </svg>
-          请我喝杯咖啡
+          <span data-i18n="donate-btn">请我喝杯咖啡</span>
         </button>
-        <p class="donate-hint">如果 MyTime 帮到了你，欢迎请作者喝一杯 ☕</p>
+        <p class="donate-hint" data-i18n="donate-hint">如果 MyTime 帮到了你，欢迎请作者喝一杯 ☕</p>
       </section>
 
       <footer>
@@ -505,24 +549,138 @@
       </footer>
     </div>
 
-    <!-- 捐赠弹窗：微信 / 支付宝收款码 + Buy Me a Coffee -->
+    <!-- 捐赠弹窗：微信 / 支付宝收款码 -->
     <div class="donate-overlay" id="donate-overlay" hidden>
       <div class="donate-modal" role="dialog" aria-modal="true" aria-label="支持作者">
         <button class="donate-close" id="donate-close" type="button" aria-label="关闭">×</button>
-        <h3 class="donate-title">请作者喝杯咖啡</h3>
-        <p class="donate-sub">MyTime 是免费的，你的支持就是更新的动力 🧡</p>
+        <h3 class="donate-title" data-i18n="donate-title">请作者喝杯咖啡</h3>
+        <p class="donate-sub" data-i18n="donate-sub">MyTime 是免费的，你的支持就是更新的动力 🧡</p>
         <div class="qr-grid">
           <figure>
             <img src="img/wechat-qr.png" alt="微信收款码" />
-            <figcaption>微信</figcaption>
+            <figcaption data-i18n="wechat">微信</figcaption>
           </figure>
           <figure>
             <img src="img/alipay-qr.png" alt="支付宝收款码" />
-            <figcaption>支付宝</figcaption>
+            <figcaption data-i18n="alipay">支付宝</figcaption>
           </figure>
         </div>
       </div>
     </div>
+
+    <script>
+      // Language + theme switches: choices persist in localStorage; when unset the page
+      // follows the browser language / system color scheme.
+      (function () {
+        var I18N = {
+          zh: {
+            "page-title": "cabbage · 蔡恩祈",
+            subtitle: "上海交通大学 · 本科生",
+            about: "About",
+            "about-text": "我是蔡恩祈，也可以叫我 cabbage，现在是上海交通大学的本科生。平时喜欢写一些解决自己需求的小工具，相信简单的东西才容易被真正用起来。",
+            projects: "Projects",
+            "proj-desc": "Windows 桌面流体备忘录小组件：Markdown 事件细节、子任务、重复任务、日历订阅，常驻桌面即写即看。",
+            "changelog-link": "更新日志 →",
+            "version-title": "自动同步 GitHub 最新 Release",
+            contact: "Contact",
+            "donate-btn": "请我喝杯咖啡",
+            "donate-hint": "如果 MyTime 帮到了你，欢迎请作者喝一杯 ☕",
+            "donate-title": "请作者喝杯咖啡",
+            "donate-sub": "MyTime 是免费的，你的支持就是更新的动力 🧡",
+            wechat: "微信",
+            alipay: "支付宝",
+          },
+          en: {
+            "page-title": "cabbage · Cai Enqi",
+            subtitle: "Undergraduate · Shanghai Jiao Tong University",
+            about: "About",
+            "about-text": "I'm Cai Enqi — most people call me cabbage. I study at Shanghai Jiao Tong University and build small tools that solve my own problems, because simple things are the ones that actually get used.",
+            projects: "Projects",
+            "proj-desc": "A translucent desktop memo widget for Windows: Markdown event details, subtasks, recurring todos and calendar feeds — always on your desktop, always in sight.",
+            "changelog-link": "Changelog →",
+            "version-title": "Live-synced from the latest GitHub release",
+            contact: "Contact",
+            "donate-btn": "Buy me a coffee",
+            "donate-hint": "If MyTime helps you, a coffee is always appreciated ☕",
+            "donate-title": "Buy me a coffee",
+            "donate-sub": "MyTime is free — your support keeps the updates coming 🧡",
+            wechat: "WeChat Pay",
+            alipay: "Alipay",
+          },
+        };
+        var MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8" />';
+        var SUN = '<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.9 4.9 1.4 1.4" /><path d="m17.7 17.7 1.4 1.4" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.3 17.7-1.4 1.4" /><path d="m19.1 4.9-1.4 1.4" />';
+
+        var html = document.documentElement;
+        var langBtn = document.getElementById("lang-btn");
+        var themeBtn = document.getElementById("theme-btn");
+        var themeIcon = document.getElementById("theme-icon");
+
+        function stored(key) {
+          try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function save(key, val) {
+          try { localStorage.setItem(key, val); } catch (e) {}
+        }
+
+        function applyLang(lang) {
+          var entries = I18N[lang] || I18N.zh;
+          html.setAttribute("lang", lang === "zh" ? "zh-CN" : "en");
+          document.title = entries["page-title"];
+          document.querySelectorAll("[data-i18n]").forEach(function (el) {
+            var val = entries[el.getAttribute("data-i18n")];
+            if (val !== undefined) el.textContent = val;
+          });
+          var vp = document.getElementById("lmw-version");
+          if (vp) vp.title = entries["version-title"];
+          langBtn.textContent = lang === "zh" ? "EN" : "中文";
+          langBtn.title = lang === "zh" ? "切换为英文" : "切换为中文";
+        }
+        var langCache;
+        function dict() {
+          langCache = langCache || I18N[currentLang()];
+          return langCache;
+        }
+        function currentLang() {
+          return stored("site-lang") || ((navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en");
+        }
+        function currentTheme() {
+          var t = stored("site-theme");
+          if (t === "dark" || t === "light") return t;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+
+        var currentLangValue = currentLang();
+        langCache = I18N[currentLangValue];
+        applyLang(currentLangValue);
+
+        var themeIcon = document.getElementById("theme-icon");
+        function drawIcon() {
+          themeIcon.innerHTML = currentTheme() === "dark" ? SUN : MOON; // show the target mode
+        }
+        drawIcon();
+
+        themeBtn.addEventListener("click", function () {
+          var next = currentTheme() === "dark" ? "light" : "dark";
+          try { localStorage.setItem("site-theme", next); } catch (e) {}
+          html.setAttribute("data-theme", next);
+          drawIcon();
+        });
+        langBtn.addEventListener("click", function () {
+          currentLangValue = currentLangValue === "zh" ? "en" : "zh";
+          try { localStorage.setItem("site-lang", currentLangValue); } catch (e) {}
+          langCache = I18N[currentLangValue];
+          applyLang(currentLangValue);
+        });
+
+        // expose the effective theme for headless screenshot tests
+        window.__siteTheme = function () {
+          var t = stored("site-theme");
+          if (t) return t;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        };
+      })();
+    </script>
 
     <script>
       // Donate modal: open/close via button, backdrop click or Esc.

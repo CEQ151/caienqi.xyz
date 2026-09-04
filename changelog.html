@@ -19,7 +19,7 @@
         --card-bg: transparent;
       }
       @media (prefers-color-scheme: dark) {
-        :root {
+        :root:not([data-theme="light"]) {
           --bg: #101216;
           --text: #e8eaed;
           --muted: #8b919b;
@@ -28,6 +28,15 @@
           --divider: #23272e;
           --accent: #7da4e0;
         }
+      }
+      html[data-theme="dark"] {
+        --bg: #101216;
+        --text: #e8eaed;
+        --muted: #8b919b;
+        --pill-bg: #1d2127;
+        --pill-text: #aab1bb;
+        --divider: #23272e;
+        --accent: #7da4e0;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
@@ -180,26 +189,137 @@
         border-top: 1px solid var(--divider);
         line-height: 1.5;
       }
+      /* 右上角悬浮切换钮（语言 / 主题）—— 与主页一致 */
+      .float-controls {
+        position: fixed;
+        top: 22px;
+        right: 22px;
+        z-index: 60;
+        display: flex;
+        gap: 8px;
+      }
+      .float-btn {
+        min-width: 44px;
+        height: 40px;
+        padding: 0 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--divider);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--bg) 78%, transparent);
+        backdrop-filter: blur(8px);
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .float-btn:hover { color: var(--text); border-color: var(--muted); }
+      .float-btn svg { width: 17px; height: 17px; }
     </style>
   </head>
   <body>
+    <div class="float-controls">
+      <button class="float-btn" id="lang-btn" type="button" title="Switch language">EN</button>
+      <button class="float-btn" id="theme-btn" type="button" title="切换主题">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+      </button>
+    </div>
     <div class="container">
-      <a class="back" href="/">← 返回主页</a>
+      <a class="back" href="/" data-i18n="back">← 返回主页</a>
       <h1>
         <img class="app-icon" src="https://raw.githubusercontent.com/CEQ151/MyTime/main/assets/logo.png" alt="MyTime 图标" />
-        MyTime 更新日志
+        <span data-i18n="title">MyTime 更新日志</span>
       </h1>
       <p class="subtitle">
-        从第一个版本到现在的完整更新路线 · 下载最新版请见
-        <a href="/#projects">主页</a> 或
+        <span data-i18n="subtitle-pre">从第一个版本到现在的完整更新路线 · 下载最新版请见</span>
+        <a href="/#projects" data-i18n="home">主页</a>
+        <span data-i18n="or">或</span>
         <a href="https://github.com/CEQ151/MyTime/releases" target="_blank" rel="noopener">GitHub Releases</a>
       </p>
 
       <div class="timeline" id="timeline">
-        <p class="error" id="loading">正在加载更新日志…</p>
+        <p class="error" id="loading" data-i18n="loading">正在加载更新日志…</p>
       </div>
     </div>
 
+    <script>
+      // Language + theme switches, same behavior as the homepage (localStorage-backed).
+      (function () {
+        var I18N = {
+          zh: {
+            "page-title": "更新日志 · MyTime",
+            back: "← 返回主页",
+            title: "MyTime 更新日志",
+            "subtitle-pre": "从第一个版本到现在的完整更新路线 · 下载最新版请见",
+            home: "主页",
+            or: "或",
+            loading: "正在加载更新日志…",
+          },
+          en: {
+            "page-title": "Changelog · MyTime",
+            back: "← Back to homepage",
+            title: "MyTime Changelog",
+            "subtitle-pre": "Every release from day one · Get the latest build from",
+            home: "homepage",
+            or: "or",
+            loading: "Loading changelog…",
+          },
+        };
+        var MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8" />';
+        var SUN = '<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.9 4.9 1.4 1.4" /><path d="m17.7 17.7 1.4 1.4" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.3 17.7-1.4 1.4" /><path d="m19.1 4.9-1.4 1.4" />';
+
+        var html = document.documentElement;
+        var langBtn = document.getElementById("lang-btn");
+        var themeBtn = document.getElementById("theme-btn");
+        var themeIcon = document.getElementById("theme-icon");
+
+        function stored(key) {
+          try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function currentLang() {
+          return stored("site-lang") || ((navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en");
+        }
+        function currentTheme() {
+          var t = stored("site-theme");
+          if (t === "dark" || t === "light") return t;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        function applyLang(l) {
+          var entries = I18N[l] || I18N.zh;
+          html.setAttribute("lang", l === "zh" ? "zh-CN" : "en");
+          document.title = entries["page-title"];
+          document.querySelectorAll("[data-i18n]").forEach(function (el) {
+            var val = entries[el.getAttribute("data-i18n")];
+            if (val !== undefined) el.textContent = val;
+          });
+          langBtn.textContent = l === "zh" ? "EN" : "中文";
+          langBtn.title = l === "zh" ? "切换为英文" : "切换为中文";
+        }
+
+        var lang = currentLang();
+        applyLang(lang);
+        themeIcon.innerHTML = currentTheme() === "dark" ? SUN : MOON;
+
+        themeBtn.addEventListener("click", function () {
+          var next = currentTheme() === "dark" ? "light" : "dark";
+          try { localStorage.setItem("site-theme", next); } catch (e) {}
+          html.setAttribute("data-theme", next);
+          themeIcon.innerHTML = next === "dark" ? SUN : MOON;
+        });
+        langBtn.addEventListener("click", function () {
+          lang = lang === "zh" ? "en" : "zh";
+          try { localStorage.setItem("site-lang", lang); } catch (e) {}
+          applyLang(lang);
+        });
+
+        // Live state for the changelog renderer (error message language) and tests.
+        window.__siteLang = function () { return lang; };
+        window.__siteTheme = function () { return currentTheme(); };
+      })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
     <script>
       // Render the repo's CHANGELOG.md live: new releases show up here automatically,
@@ -314,9 +434,14 @@
           .catch(function () {
             var p = document.getElementById("loading");
             if (p) {
-              p.innerHTML =
-                "更新日志加载失败（网络或限流原因）。你可以直接在 GitHub 上查看" +
-                '<a href="https://github.com/CEQ151/MyTime/blob/main/CHANGELOG.md" target="_blank" rel="noopener">完整更新日志</a>。';
+              var lang = (window.__siteLang && window.__siteLang()) || "zh";
+              var msgs = {
+                zh: '更新日志加载失败（网络或限流原因）。你可以直接在 GitHub 上查看' +
+                    '<a href="https://github.com/CEQ151/MyTime/blob/main/CHANGELOG.md" target="_blank" rel="noopener">完整更新日志</a>。',
+                en: 'Failed to load the changelog (network or rate limit). Read the ' +
+                    '<a href="https://github.com/CEQ151/MyTime/blob/main/CHANGELOG.md" target="_blank" rel="noopener">full changelog</a> on GitHub.',
+              };
+              p.innerHTML = msgs[lang] || msgs.zh;
             }
           });
       })();
